@@ -8,6 +8,10 @@ import Control.Exception
 initialize m = hSetBuffering stdout NoBuffering >> m
 busy = do
     putStr "busy... "
+    -- I don't actually understand why this seems to produce a
+    -- consistent time, but it seems to work OK.  Maybe an alternate
+    -- approach might be to split up the work into small quanta and keep
+    -- doing it until the desired time is met.
     (n, w) <- timed $ do
         n <- calculateWaitTime
         -- A magical number that seems to give the

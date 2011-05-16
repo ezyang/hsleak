@@ -8,14 +8,20 @@ import Control.Exception
 initialize m = hSetBuffering stdout NoBuffering >> m
 busy = do
     putStr "busy... "
-    n <- calculateWaitTime
-    -- A magical number that seems to give the
-    -- right perceived delay
-    evaluate $ sum [1 .. floor (400 / n)]
-    putStrLn "done"
+    (n, w) <- timed $ do
+        n <- calculateWaitTime
+        -- A magical number that seems to give the
+        -- right perceived delay
+        evaluate (sum [1 .. floor (400 / n)])
+        performGC
+        return n
+    putStrLn ("gc = " ++ show n ++ ", wait = " ++ show w)
 calculateWaitTime = do
     performGC -- avoid inaccuracies due to lots of garbage
+    (_, r) <- timed performGC
+    return r
+timed m = do
     t  <- getCurrentTime
-    performGC
+    r  <- m
     t' <- getCurrentTime
-    return (diffUTCTime t' t)
+    return (r, diffUTCTime t' t)

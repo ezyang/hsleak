@@ -1,0 +1,6 @@
+*.aux
+*.hp
+*.o
+*.ps
+*.hi
+strong-ref

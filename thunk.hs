@@ -1,0 +1,29 @@
+import Harness
+
+main = initialize $ do
+    evaluate (f [1..4000000] (0 :: Int, 1 :: Int))
+
+f []     c = c
+f (x:xs) c = f xs (permute x c)
+
+permute x (c0, c1) | even x    = (c1, c0)
+                   | otherwise = (c0 + 1, c1 - 1)
+
+-- Fixes:
+--  * rnf c `seq` f xs (permute x c)
+--  * Bang-pattern c0 and c1
+--  * Manually inline permute and remove tuple (or use
+--    an unboxed return)
+-- Not fixes:
+--  * Only bang pattern c in f
+--  * Make tuple irrefutable
+--      That makes more THUNK_2_0 (tuple thunks)!
+-- Perturbations:
+--  * Replace tuple with a flat data type
+--      With optimizations, GHC can manage strictness analysis fine;
+--      for example, calculating length of a list without any strictness
+--      annotations works fine if you have -O.  And of course, using a
+--      strict tuple does the same as bang-patterning c0 and c1.
+--  * Compile with -O0
+--      Stack overfows, and bang-patterns c0 and c1 doesn't work
+--      (need bang pattern on c as well)

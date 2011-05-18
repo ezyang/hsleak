@@ -11,7 +11,7 @@ permute x (c0, c1) | even x    = (c1, c0)
 
 -- Fixes:
 --  * rnf c `seq` f xs (permute x c)
---  * Bang-pattern c0 and c1
+--  * Bang-pattern c0 and c1 (strictify permute)
 --  * Manually inline permute and remove tuple (or use
 --    an unboxed return)
 -- Not fixes:
@@ -27,3 +27,6 @@ permute x (c0, c1) | even x    = (c1, c0)
 --  * Compile with -O0
 --      Stack overfows, and bang-patterns c0 and c1 doesn't work
 --      (need bang pattern on c as well)
+--  * A single-value container type (data I a = I a) or reference type
+--    (IOVar, MVar) also suffers from these leaks.
+-- Note: This example involves only a few very long thunk chains

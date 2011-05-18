@@ -1,18 +1,19 @@
+{-# LANGUAGE BangPatterns #-}
 import Harness
 
-main = initialize $ do
-    evaluate (f [1..4000000] (0 :: Int, 1 :: Int))
+main = do
+    evaluate (fst (f [1..4000000] (0 :: Int, 1 :: Int)))
 
 f []     c = c
-f (x:xs) c = f xs (permute x c)
+f (x:xs) c = f xs (tick x c)
 
-permute x (c0, c1) | even x    = (c1, c0)
-                   | otherwise = (c0 + 1, c1 - 1)
+tick x (c0, c1) | even x    = (c0, c1 + 1)
+                | otherwise = (c0 + 1, c1)
 
 -- Fixes:
---  * rnf c `seq` f xs (permute x c)
---  * Bang-pattern c0 and c1 (strictify permute)
---  * Manually inline permute and remove tuple (or use
+--  * rnf c `seq` f xs (tick x c)
+--  * Bang-pattern c0 and c1 (strictify tick)
+--  * Manually tick permute and remove tuple (or use
 --    an unboxed return)
 -- Not fixes:
 --  * Only bang pattern c in f

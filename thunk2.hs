@@ -12,7 +12,7 @@ ssFromList (x:xs) l = ssFromList xs (Cons x l)
 ssMap _ Nil = Nil
 ssMap f (Cons x xs) = Cons (f x) (ssMap f xs)
 
-main = initialize $ do
+main = do
     let x = ssFromList (zip [1..100] (repeat 1)) Nil
     evaluate (loop 80000 x)
 

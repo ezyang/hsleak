@@ -3,6 +3,10 @@
 *.o
 *.ps
 *.hi
+*.png
+*.svg
+*.dump*
 strong-ref
 thunk
 thunk2
+thunk3

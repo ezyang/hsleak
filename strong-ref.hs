@@ -5,7 +5,7 @@ import Data.IORef
 main = initialize $ do
     let x = [1..5000000] :: [Int]
     busy
-    evaluate (rnf x)
+    evaluate (length x)
     ref <- newIORef x
     busy
     writeIORef ref []

@@ -2,14 +2,12 @@ module Harness (
     initialize,
     busy,
     module Control.Exception,
-    module Control.DeepSeq
 ) where
 
 import Data.Time
 import System.IO
 import System.Mem
 import Control.Exception
-import Control.DeepSeq
 
 initialize m = hSetBuffering stdout NoBuffering >> m
 busy = do
